@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "starfarm:sprinklers",
+  "category": "misc",
+  "pattern": [
+    "cic",
+    "ibi",
+    "cic"
+  ],
+  "key": {
+    "b": "minecraft:water_bucket",
+    "i": "minecraft:iron_ingot",
+    "c": "minecraft:cobblestone"
+  },
+  "result": {
+    "id": "starfarm:sprinkler",
+    "count": 1
+  }
+}

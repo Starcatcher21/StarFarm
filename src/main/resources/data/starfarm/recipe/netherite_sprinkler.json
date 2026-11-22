@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smithing_transform",
+  "show_notification": true,
+  "base": "starfarm:diamond_sprinkler",
+  "addition": "minecraft:netherite_ingot",
+  "template": "minecraft:netherite_upgrade_smithing_template",
+  "result": {
+    "id": "starfarm:netherite_sprinkler",
+    "count": 1
+  }
+}

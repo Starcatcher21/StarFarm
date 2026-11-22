@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "com.github.starcatcher21.starfarm.mixin",
+  "minVersion": "0.8",
+  "mixins": [
+    "FarmlandMixin",
+    "BlockMixin",
+    "CropMixin",
+    "StemMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

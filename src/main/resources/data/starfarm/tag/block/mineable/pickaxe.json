@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "starfarm:sprinkler",
+    "starfarm:gold_sprinkler",
+    "starfarm:diamond_sprinkler",
+    "starfarm:netherite_sprinkler"
+  ]
+}

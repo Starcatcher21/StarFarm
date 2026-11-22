@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "starfarm:sprinklers",
+  "category": "misc",
+  "pattern": [
+    " g ",
+    "gsg",
+    " g "
+  ],
+  "key": {
+    "s": "starfarm:sprinkler",
+    "g": "minecraft:gold_ingot"
+  },
+  "result": {
+    "id": "starfarm:gold_sprinkler",
+    "count": 1
+  }
+}
