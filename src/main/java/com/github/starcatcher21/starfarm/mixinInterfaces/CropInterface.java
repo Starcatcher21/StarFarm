@@ -6,4 +6,5 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface CropInterface {
     void starfarm$daily(BlockState state, ServerLevel level, BlockPos pos);
+    int starfarm$growTime(BlockState state, ServerLevel level, BlockPos pos);
 }

@@ -1,16 +1,13 @@
 package com.github.starcatcher21.starfarm.mixin;
 
+import com.github.starcatcher21.starfarm.data.CropGrowthData;
 import com.github.starcatcher21.starfarm.mixinInterfaces.CropInterface;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,20 +25,59 @@ public class StemMixin implements CropInterface {
 
     @Override
     public void starfarm$daily(BlockState state, ServerLevel level, BlockPos pos) {
-        var tis = (StemBlock) (Object) this;
-        var random = level.getRandom();
-        if (level.getRawBrightness(pos, 0) >= 9) {
-            int age = state.getValue(StemBlock.AGE);
-            if (age < StemBlock.MAX_AGE) {
-                level.setBlock(pos, state.setValue(StemBlock.AGE, age + 1), 2);
-            } else {
-                Registry<Block> blocks = level.registryAccess().lookupOrThrow(Registries.BLOCK);
-                Optional<Block> fruit = blocks.getOptional(tis.fruit);
-                Optional<Block> stem = blocks.getOptional(tis.attachedStem);
-                if (fruit.isPresent() && stem.isPresent()) {
-                    level.setBlockAndUpdate(pos, ((Block)fruit.get()).defaultBlockState());
-                }
-            }
+        StemBlock crop = (StemBlock) (Object) this;
+
+        if (level.getRawBrightness(pos, 0) < 9) {
+            return;
         }
+
+        int maxAge     = StemBlock.MAX_AGE;
+        int currentAge = state.getValue(StemBlock.AGE);
+        if (currentAge >= maxAge) {
+            return;
+        }
+
+        int growTime = this.starfarm$growTime(state, level, pos);
+        if (growTime <= 0) {
+            return;
+        }
+
+        CropGrowthData data = level.getDataStorage()
+                .computeIfAbsent(CropGrowthData.TYPE);
+        long key = pos.asLong();
+
+        Integer stored = data.getProgress(key);
+        int progress;
+        if (currentAge == 0) {
+            progress = stored != null ? stored : 0;
+        } else {
+            int fromAge = (currentAge * growTime) / Math.max(1, maxAge);
+            progress = stored != null ? Math.max(stored, fromAge) : fromAge;
+        }
+
+        progress++;
+        int newAge = Math.min(maxAge, (progress * maxAge) / growTime);
+
+        if (newAge > currentAge) {
+            level.setBlock(pos, state.setValue(StemBlock.AGE, newAge), 2);
+        }
+
+        if (progress >= growTime || newAge >= maxAge) {
+            data.clearProgress(key);
+            Registry<Block> blocks = level.registryAccess().lookupOrThrow(Registries.BLOCK);
+            Optional<Block> fruit = blocks.getOptional(crop.fruit);
+            if (fruit.isPresent()) {
+                level.setBlock(pos, fruit.get().defaultBlockState(), 2);
+            }
+        } else {
+            data.setProgress(key, progress);
+        }
+    }
+
+    @Override
+    public int starfarm$growTime(BlockState state, ServerLevel level, BlockPos pos) {
+        if (state.getBlock().equals(Blocks.MELON_STEM))    return 12;
+        if (state.getBlock().equals(Blocks.PUMPKIN_STEM))  return 13;
+        return 7;
     }
 }
