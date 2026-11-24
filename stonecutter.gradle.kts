@@ -8,4 +8,4 @@ tasks.register("publishAll") {
     dependsOn(stonecutter.versions.map { ":${it.project}:publishMod" })
 }
 
-stonecutter active "26.3-fabric" /* [SC] DO NOT EDIT */
+stonecutter active "26.1.2-neoforge" /* [SC] DO NOT EDIT */

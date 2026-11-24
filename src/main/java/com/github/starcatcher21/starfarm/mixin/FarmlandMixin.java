@@ -12,6 +12,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmlandBlock;
+import net.minecraft.world.level.block.PitcherCropBlock;
 import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,10 +43,10 @@ public abstract class FarmlandMixin {
                     level.setBlock(pos, (BlockState)state.setValue(FarmlandBlock.MOISTURE, 0), 2);
                 } else if (!starfarm$shouldMaintainFarmland(level, pos)) {
                     //? if < 26.3 {
-                    /*((FarmlandBlock) (Object)this).turnToDirt((Entity) null, state, level, pos);
-                    *///? } else {
-                    ((FarmlandBlock) (Object)this).turnToBaseBlock((Entity)null, state, level, pos);
-                    //? }
+                    ((FarmlandBlock) (Object)this).turnToDirt((Entity) null, state, level, pos);
+                    //? } else {
+                    /*((FarmlandBlock) (Object)this).turnToBaseBlock((Entity)null, state, level, pos);
+                    *///? }
                 }
             } else if (moisture < 7) {
                 level.setBlock(pos, (BlockState)state.setValue(FarmlandBlock.MOISTURE, 7), 2);
@@ -57,6 +58,10 @@ public abstract class FarmlandMixin {
                 }
                 if (block.getBlock() instanceof CropBlock cb) {
                     CropInterface cropinterface = (CropInterface) cb;
+                    cropinterface.starfarm$daily(block, level, pos.above());
+                }
+                if (block.getBlock() instanceof PitcherCropBlock pcb) {
+                    CropInterface cropinterface = (CropInterface) pcb;
                     cropinterface.starfarm$daily(block, level, pos.above());
                 }
             }

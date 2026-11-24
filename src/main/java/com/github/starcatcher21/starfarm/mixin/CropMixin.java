@@ -1,12 +1,11 @@
 package com.github.starcatcher21.starfarm.mixin;
 
 import com.github.starcatcher21.starfarm.data.CropGrowthData;
+import com.github.starcatcher21.starfarm.data.GrowTime;
 import com.github.starcatcher21.starfarm.mixinInterfaces.CropInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.BeetrootBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -72,10 +71,11 @@ public class CropMixin implements CropInterface {
 
     @Override
     public int starfarm$growTime(BlockState state, ServerLevel level, BlockPos pos) {
-        if (state.getBlock().equals(Blocks.WHEAT))     return 4;
-        if (state.getBlock().equals(Blocks.POTATOES))  return 6;
-        if (state.getBlock().equals(Blocks.CARROTS))   return 3;
-        if (state.getBlock().equals(Blocks.BEETROOTS)) return 6;
+        for (GrowTime gt : GrowTime.list) {
+            if (state.getBlock().equals(gt.PLANT.getBlock())) {
+                return gt.GROWTIME;
+            }
+        }
         return 7;
     }
 }

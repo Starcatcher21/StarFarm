@@ -3,6 +3,7 @@ import gg.meza.stonecraft.mod
 plugins {
     id("gg.meza.stonecraft")
     id("com.hypherionmc.modutils.modpublisher") version "2.2.4"
+    `maven-publish`
 }
 
 repositories {
@@ -13,11 +14,36 @@ repositories {
     maven("https://maven.firstdark.dev/releases")
 }
 
+val generatedDir = file("src/main/generated")
+
+sourceSets {
+    main {
+        resources {
+            srcDir(generatedDir)
+        }
+    }
+}
+
 loom {
     version = project.mod.version
     enableTransitiveAccessWideners = false
     runs.named("client") {
         programArgs("--uuid", "00000000-0000-0000-0000-000000000000")
+    }
+}
+
+val modVersion = project.version.toString()
+val mcVersion2 = stonecutter.current.version
+val loaderName = stonecutter.current.project.substringAfterLast('-', stonecutter.current.project)
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            artifact(tasks.named("jar"))
+            groupId = "com.github.starcatcher21.starfarm"
+            artifactId = "${modVersion}-${mcVersion2}"
+            version = loaderName
+        }
     }
 }
 
@@ -82,6 +108,10 @@ val mcVersion = project.name.substringBeforeLast('-')
 
 tasks.named("publishMod") {
     dependsOn(if (tasks.names.contains("remapJar")) "remapJar" else "jar")
+}
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 val dotenv: Map<String, String> = rootProject.file(".env")

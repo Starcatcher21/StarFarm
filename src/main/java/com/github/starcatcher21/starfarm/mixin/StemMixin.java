@@ -1,6 +1,7 @@
 package com.github.starcatcher21.starfarm.mixin;
 
 import com.github.starcatcher21.starfarm.data.CropGrowthData;
+import com.github.starcatcher21.starfarm.data.GrowTime;
 import com.github.starcatcher21.starfarm.mixinInterfaces.CropInterface;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -76,8 +77,11 @@ public class StemMixin implements CropInterface {
 
     @Override
     public int starfarm$growTime(BlockState state, ServerLevel level, BlockPos pos) {
-        if (state.getBlock().equals(Blocks.MELON_STEM))    return 12;
-        if (state.getBlock().equals(Blocks.PUMPKIN_STEM))  return 13;
+        for (GrowTime gt : GrowTime.list) {
+            if (state.getBlock().equals(gt.PLANT.getBlock())) {
+                return gt.GROWTIME;
+            }
+        }
         return 7;
     }
 }

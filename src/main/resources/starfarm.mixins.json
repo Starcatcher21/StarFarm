@@ -6,7 +6,8 @@
     "FarmlandMixin",
     "BlockMixin",
     "CropMixin",
-    "StemMixin"
+    "StemMixin",
+    "PitcherplantMixin"
   ],
   "client": [
   ],
